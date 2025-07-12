@@ -1,48 +1,64 @@
 @startuml
-class Produkt {
+package pl.rma.model {
+  class Produkt {
     - int id
     - String nazwa
-}
+  }
 
-enum Status {
-    NOWA
-    W_TRAKCIE
-    ZAKONCZONA
-}
-
-class Reklamacja {
+  class Reklamacja {
     - int id
     - Produkt produkt
     - String opis
     - Status status
+    - LocalDate dataZgloszenia
+  }
+
+  enum Status {
+    NOWA
+    W_TRAKCIE
+    ZAKONCZONA
+  }
 }
 
-class MemoryRepozytorium {
-    - Map<Integer, Reklamacja> reklamacje
-    + dodaj(Reklamacja)
-    + znajdzWszystkie()
-    + znajdzPoId(int)
-    + aktualizuj(Reklamacja)
-    + usun(int)
+package pl.rma.repo {
+  interface Repozytorium<T> {
+    + void dodaj(T t)
+    + Optional<T> znajdzPoId(int id)
+    + List<T> znajdzWszystkie()
+    + void aktualizuj(T t)
+    + boolean usun(int id)
+  }
+
+  class MemoryRepozytorium implements Repozytorium<Reklamacja> {
+    - Map<Integer, Reklamacja> baza
+  }
 }
 
-class ReklamacjaService {
-    - MemoryRepozytorium repo
-    + dodajReklamacje()
-    + znajdzWszystkie()
-    + znajdzPoId()
-    + aktualizujReklamacje()
-    + usunReklamacje()
+package pl.rma.service {
+  class ReklamacjaService {
+    - Repozytorium<Reklamacja> repozytorium
+    + void dodajReklamacje(Reklamacja r)
+    + Optional<Reklamacja> znajdzPoId(int id)
+    + List<Reklamacja> znajdzWszystkie()
+    + void aktualizujReklamacje(Reklamacja r)
+    + boolean usunReklamacje(int id)
+    + void aktualizujOpis(int id, String opis)
+    + void aktualizujProdukt(int id, Produkt produkt)
+    + void zapiszDoPlikuJson(String path)
+    + void wczytajZPlikuJson(String path)
+  }
 }
 
-class App {
-    - Scanner scanner
-    - ReklamacjaService service
-    + main(String[] args)
+package pl.rma.util {
+  class FileUtils
+  class LocalizationUtils
 }
 
+class App
+
+App --> ReklamacjaService
+ReklamacjaService --> Repozytorium
+Repozytorium <|.. MemoryRepozytorium
 Reklamacja --> Produkt
 Reklamacja --> Status
-ReklamacjaService --> MemoryRepozytorium
-App --> ReklamacjaService
 @enduml
