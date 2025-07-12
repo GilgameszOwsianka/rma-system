@@ -1,12 +1,12 @@
 @startuml
 package pl.rma.model {
   class Produkt {
-    - int id
+    - Integer id
     - String nazwa
   }
 
   class Reklamacja {
-    - int id
+    - Integer id
     - Produkt produkt
     - String opis
     - Status status
@@ -23,14 +23,14 @@ package pl.rma.model {
 package pl.rma.repo {
   interface Repozytorium<T> {
     + void dodaj(T t)
-    + Optional<T> znajdzPoId(int id)
+    + Optional<T> znajdzPoId(Integer id)
     + List<T> znajdzWszystkie()
     + void aktualizuj(T t)
-    + boolean usun(int id)
+    + boolean usun(Integer id)
   }
 
-  class MemoryRepozytorium implements Repozytorium<Reklamacja> {
-    - Map<Integer, Reklamacja> baza
+  class MemoryRepozytorium<T> implements Repozytorium<T> {
+    - Map<Integer, T> baza
   }
 }
 
@@ -38,12 +38,12 @@ package pl.rma.service {
   class ReklamacjaService {
     - Repozytorium<Reklamacja> repozytorium
     + void dodajReklamacje(Reklamacja r)
-    + Optional<Reklamacja> znajdzPoId(int id)
+    + Optional<Reklamacja> znajdzPoId(Integer id)
     + List<Reklamacja> znajdzWszystkie()
     + void aktualizujReklamacje(Reklamacja r)
-    + boolean usunReklamacje(int id)
-    + void aktualizujOpis(int id, String opis)
-    + void aktualizujProdukt(int id, Produkt produkt)
+    + boolean usunReklamacje(Integer id)
+    + void aktualizujOpis(Integer id, String opis)
+    + void aktualizujProdukt(Integer id, Produkt produkt)
     + void zapiszDoPlikuJson(String path)
     + void wczytajZPlikuJson(String path)
   }
@@ -57,7 +57,9 @@ package pl.rma.util {
 class App
 
 App --> ReklamacjaService
+App ..> LocalizationUtils : uses
 ReklamacjaService --> Repozytorium
+ReklamacjaService ..> FileUtils : uses
 Repozytorium <|.. MemoryRepozytorium
 Reklamacja --> Produkt
 Reklamacja --> Status

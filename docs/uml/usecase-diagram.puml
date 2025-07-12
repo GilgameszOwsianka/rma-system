@@ -1,11 +1,32 @@
 @startuml
 actor Uzytkownik
 
-rectangle "System RMA" {
-    Uzytkownik -> (Dodaj reklamację)
-    Uzytkownik -> (Pokaż reklamacje)
-    Uzytkownik -> (Aktualizuj status)
-    Uzytkownik -> (Usuń reklamację)
-    Uzytkownik -> [Zmień język (PL/EN)]
+package "System RMA" {
+    usecase UC1 as "Dodaj reklamację"
+    usecase UC2 as "Pokaż reklamacje"
+    usecase UC3 as "Aktualizuj status"
+    usecase UC4 as "Usuń reklamację"
+    usecase UC5 as "Zmień język PL/EN"
+
+    Uzytkownik --> UC1
+    Uzytkownik --> UC2
+    Uzytkownik --> UC3
+    Uzytkownik --> UC4
+    Uzytkownik --> UC5
+
+    note right of UC1
+      Tworzy nową reklamację
+      z produktem, opisem i statusem
+    end note
+
+    note right of UC3
+      Umożliwia zmianę statusu
+      na NOWA, W_TRAKCIE, ZAKONCZONA
+    end note
+
+    note right of UC5
+      Wybór języka interfejsu
+      za pomocą ResourceBundle
+    end note
 }
 @enduml
