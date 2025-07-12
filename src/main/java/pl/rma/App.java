@@ -5,7 +5,9 @@ import pl.rma.model.Reklamacja;
 import pl.rma.model.Status;
 import pl.rma.repo.MemoryRepozytorium;
 import pl.rma.service.ReklamacjaService;
+import pl.rma.util.JsonFileUtils;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
@@ -15,13 +17,28 @@ import java.util.Scanner;
 public class App {
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final ReklamacjaService service = new ReklamacjaService(new MemoryRepozytorium());
+    private static final MemoryRepozytorium repo = new MemoryRepozytorium();
+    private static final ReklamacjaService service = new ReklamacjaService(repo);
     private static final ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale("pl"));
+    private static int nextId = 1;
 
     public static void main(String[] args) {
+        //Wczytanie z JSON na starcie
+        try {
+            List<Reklamacja> wczytane = JsonFileUtils.wczytajReklamacjeZPliku("reklamacje.json");
+            for (Reklamacja r : wczytane) {
+                repo.dodaj(r);
+                if (r.getId() >= nextId) {
+                    nextId = r.getId() + 1;
+                }
+            }
+            System.out.println("Wczytano reklamacje z pliku reklamacje.json");
+        } catch (IOException e) {
+            System.out.println("Nie udało się wczytać pliku. Zaczynam od pustej listy.");
+        }
+
         System.out.println(messages.getString("menu.title"));
         boolean running = true;
-        int nextId = 1;
 
         while (running) {
             System.out.println();
@@ -95,6 +112,13 @@ public class App {
                     break;
 
                 case "5":
+                    //Zapisz do JSON na wyjście
+                    try {
+                        JsonFileUtils.zapiszReklamacjeDoPliku(repo.znajdzWszystkie(), "reklamacje.json");
+                        System.out.println("Zapisano reklamacje do pliku reklamacje.json");
+                    } catch (IOException e) {
+                        System.out.println("Błąd podczas zapisu do pliku: " + e.getMessage());
+                    }
                     running = false;
                     System.out.println(messages.getString("info.goodbye"));
                     break;
@@ -105,5 +129,3 @@ public class App {
         }
     }
 }
-
-

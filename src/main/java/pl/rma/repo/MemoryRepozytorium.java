@@ -37,5 +37,9 @@ public class MemoryRepozytorium implements Repozytorium {
     public boolean usun(int id) {
         return storage.remove(id) != null;
     }
+
+    public void wyczysc() {
+        storage.clear();
+    }
 }
 

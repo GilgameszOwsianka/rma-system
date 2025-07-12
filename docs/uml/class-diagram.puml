@@ -1,0 +1,48 @@
+@startuml
+class Produkt {
+    - int id
+    - String nazwa
+}
+
+enum Status {
+    NOWA
+    W_TRAKCIE
+    ZAKONCZONA
+}
+
+class Reklamacja {
+    - int id
+    - Produkt produkt
+    - String opis
+    - Status status
+}
+
+class MemoryRepozytorium {
+    - Map<Integer, Reklamacja> reklamacje
+    + dodaj(Reklamacja)
+    + znajdzWszystkie()
+    + znajdzPoId(int)
+    + aktualizuj(Reklamacja)
+    + usun(int)
+}
+
+class ReklamacjaService {
+    - MemoryRepozytorium repo
+    + dodajReklamacje()
+    + znajdzWszystkie()
+    + znajdzPoId()
+    + aktualizujReklamacje()
+    + usunReklamacje()
+}
+
+class App {
+    - Scanner scanner
+    - ReklamacjaService service
+    + main(String[] args)
+}
+
+Reklamacja --> Produkt
+Reklamacja --> Status
+ReklamacjaService --> MemoryRepozytorium
+App --> ReklamacjaService
+@enduml

@@ -1,0 +1,9 @@
+[ {
+  "id" : 1,
+  "produkt" : {
+    "id" : 1,
+    "nazwa" : "Laptop"
+  },
+  "status" : "NOWA",
+  "opis" : "Pęknięta matryca"
+} ]

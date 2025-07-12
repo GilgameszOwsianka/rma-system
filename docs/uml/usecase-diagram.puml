@@ -1,0 +1,11 @@
+@startuml
+actor Uzytkownik
+
+rectangle "System RMA" {
+    Uzytkownik -> (Dodaj reklamację)
+    Uzytkownik -> (Pokaż reklamacje)
+    Uzytkownik -> (Aktualizuj status)
+    Uzytkownik -> (Usuń reklamację)
+    Uzytkownik -> [Zmień język (PL/EN)]
+}
+@enduml

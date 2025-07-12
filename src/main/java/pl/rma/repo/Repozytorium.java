@@ -11,5 +11,6 @@ public interface Repozytorium {
     List<Reklamacja> znajdzWszystkie();
     Reklamacja aktualizuj(Reklamacja reklamacja);
     boolean usun(int id);
+    void wyczysc();
 }
 

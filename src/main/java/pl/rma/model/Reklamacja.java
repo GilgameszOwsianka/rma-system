@@ -6,6 +6,10 @@ public class Reklamacja {
     private Status status;
     private String opis;
 
+    public Reklamacja() {
+        // pusty konstruktor potrzebny dla Jacksona
+    }
+
     public Reklamacja(int id, Produkt produkt, Status status, String opis) {
         this.id = id;
         this.produkt = produkt;
@@ -13,10 +17,12 @@ public class Reklamacja {
         this.opis = opis;
     }
 
-    // Gettery i settery
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Produkt getProdukt() {
@@ -53,4 +59,3 @@ public class Reklamacja {
                 '}';
     }
 }
-
