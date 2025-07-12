@@ -1,15 +1,14 @@
 package pl.rma.service;
 
+import pl.rma.model.Produkt;
 import pl.rma.model.Reklamacja;
-import pl.rma.model.Status;
 import pl.rma.repo.Repozytorium;
 import pl.rma.util.JsonFileUtils;
 
-
-import java.util.List;
-import java.util.Optional;
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class ReklamacjaService {
 
@@ -20,7 +19,6 @@ public class ReklamacjaService {
     }
 
     public Reklamacja dodajReklamacje(Reklamacja reklamacja) {
-        reklamacja.setStatus(Status.NOWA);
         return repozytorium.dodaj(reklamacja);
     }
 
@@ -40,16 +38,38 @@ public class ReklamacjaService {
         return repozytorium.usun(id);
     }
 
+    public void wyczyscRepozytorium() {
+        if (repozytorium instanceof pl.rma.repo.MemoryRepozytorium) {
+            repozytorium.wyczysc();
+        } else {
+            throw new UnsupportedOperationException("Metoda wyczyscRepozytorium jest obsługiwana tylko dla MemoryRepozytorium");
+        }
+    }
+
     public void zapiszDoPlikuJson(String sciezkaPliku) throws IOException {
         List<Reklamacja> lista = repozytorium.znajdzWszystkie();
         JsonFileUtils.zapiszReklamacjeDoPliku(lista, sciezkaPliku);
+        System.out.println("Zapisano reklamacje do pliku: " + lista.size());
     }
 
     public void wczytajZPlikuJson(String sciezkaPliku) throws IOException {
         List<Reklamacja> lista = JsonFileUtils.wczytajReklamacjeZPliku(sciezkaPliku);
-        // Czyszczenie repozytorium i dodanie wczytanych (załóżmy, że repozytorium ma metodę czyszczącą)
-        repozytorium.wyczysc();
+        wyczyscRepozytorium();
         lista.forEach(repozytorium::dodaj);
+        System.out.println("Wczytano reklamacje z pliku: " + lista.size());
+    }
+
+    public Reklamacja aktualizujOpis(int id, String nowyOpis) {
+        Reklamacja r = repozytorium.znajdzPoId(id)
+                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono reklamacji o ID: " + id));
+        r.setOpis(nowyOpis);
+        return repozytorium.aktualizuj(r);
+    }
+
+    public Reklamacja aktualizujProdukt(int id, Produkt nowyProdukt) {
+        Reklamacja r = repozytorium.znajdzPoId(id)
+                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono reklamacji o ID: " + id));
+        r.setProdukt(nowyProdukt);
+        return repozytorium.aktualizuj(r);
     }
 }
-

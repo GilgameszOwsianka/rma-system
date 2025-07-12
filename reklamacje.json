@@ -4,6 +4,14 @@
     "id" : 1,
     "nazwa" : "Laptop"
   },
-  "status" : "NOWA",
+  "status" : "W_TRAKCIE",
   "opis" : "Pęknięta matryca"
+}, {
+  "id" : 2,
+  "produkt" : {
+    "id" : 2,
+    "nazwa" : "Monitor"
+  },
+  "status" : "NOWA",
+  "opis" : "Czarna plama na monitorze"
 } ]
